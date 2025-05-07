@@ -13,22 +13,6 @@ pipeline {
             }
         }
 
-        stage('Install NodeJS and Build (Front-End)') {
-            steps {
-                dir('Front-End') {
-                    sh '''
-                        curl -fsSL https://deb.nodesource.com/setup_18.x | bash -
-                        apt-get install -y nodejs
-                        node -v
-                        npm -v
-
-                        npm install -g @angular/cli@8.0.3 --legacy-peer-deps
-                        npm install --legacy-peer-deps
-                        npm run build
-                    '''
-                }
-            }
-}
         stage('Build (Back-End)') {
             steps {
                 dir('Back-End') {
@@ -60,7 +44,9 @@ pipeline {
         stage('Test (Front-End)') {
             steps {
                 dir('Front-End') {
-                    sh 'npm run test'
+                    withEnv(["PATH+NODE=${NODE_HOME}/bin"]) {
+                        sh 'npm run test'
+                    }
                 }
             }
         }
