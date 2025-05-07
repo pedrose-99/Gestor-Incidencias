@@ -9,7 +9,7 @@ pipeline {
     stages {
         stage('Checkout') {
             steps {
-                checkout scm
+                checkout scmGit(branches: [[name: '*/main']], extensions: [], userRemoteConfigs: [[credentialsId: 'jenkins', url: 'https://github.com/pedrose-99/Gestor-Incidencias.git']])
             }
         }
 
@@ -33,7 +33,7 @@ pipeline {
             steps {
                 dir('Front-End') {
                     withEnv(["PATH+NODE=${NODE_HOME}/bin"]) {
-                        sh 'npm install @angular/cli@8.0.3 --save-dev --legacy-peer-deps'
+                        sh 'rm -rf node_modules package-lock.json' // Limpieza opcional
                         sh 'npm install --legacy-peer-deps'
                         sh 'npm run build'
                     }
@@ -57,10 +57,10 @@ pipeline {
                     withSonarQubeEnv('sonarQube') {
                         withCredentials([string(credentialsId: 'jenkins-sq1', variable: 'SONAR_TOKEN')]) {
                             sh "${MAVEN_HOME}/bin/mvn sonar:sonar " +
-                                "-Dsonar.projectKey=Gestor-Incidencias " +
-                                "-Dsonar.projectName=Gestor-Incidencias " +
-                                "-Dsonar.host.url=https://8eea-2a02-9140-4f80-3500-ea23-8799-ce08-99cd.ngrok-free.app " +
-                                "-Dsonar.login=${SONAR_TOKEN}"
+                               "-Dsonar.projectKey=Gestor-Incidencias " +
+                               "-Dsonar.projectName=Gestor-Incidencias " +
+                               "-Dsonar.host.url=https://8eea-2a02-9140-4f80-3500-ea23-8799-ce08-99cd.ngrok-free.app " +
+                               "-Dsonar.login=${SONAR_TOKEN}"
                         }
                     }
                 }
