@@ -33,6 +33,7 @@ pipeline {
             steps {
                 dir('Front-End') {
                     withEnv(["PATH+NODE=${NODE_HOME}/bin"]) {
+                        sh 'npm install @angular/cli@8.0.3 --save-dev --legacy-peer-deps'
                         sh 'npm install --legacy-peer-deps'
                         sh 'npm run build'
                     }
