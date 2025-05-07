@@ -33,9 +33,12 @@ pipeline {
             steps {
                 dir('Front-End') {
                     withEnv(["PATH+NODE=${NODE_HOME}/bin"]) {
-                        sh 'rm -rf node_modules package-lock.json'
-                        sh 'npm install --legacy-peer-deps'
-                        sh 'npm run build'
+                        sh '''
+                            rm -rf node_modules package-lock.json
+                            npm install --legacy-peer-deps
+                            npm install @angular/cli@8.0.3 --save-dev --legacy-peer-deps
+                            npx ng build
+                        '''
                     }
                 }
             }
